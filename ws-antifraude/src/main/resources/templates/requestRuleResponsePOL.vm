@@ -1,0 +1,12 @@
+<batch-execution lookup="defaultKieSession">
+	<set-global identifier="result" out-identifier="currency">
+      <com.avianca.rules.bpm.Result></com.avianca.rules.bpm.Result>
+  </set-global>
+   <insert out-identifier="result" return-object="false">
+      <com.avianca.rules.bpm.ResponsePol>
+         <code>${headers.codigoRespuesta}</code>
+         <decision>${headers.decision}</decision>
+      </com.avianca.rules.bpm.ResponsePol>
+   </insert>
+<fire-all-rules/>
+</batch-execution>

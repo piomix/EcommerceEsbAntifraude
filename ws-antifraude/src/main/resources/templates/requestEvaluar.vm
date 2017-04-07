@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.maf.pagosonline.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:evaluar>
+         <arg0>${headers.clientId}</arg0>
+         <arg1>${headers.login}</arg1>
+         <arg2>${headers.password}</arg2>
+         <arg3>${headers.xmlParam}</arg3>
+      </ws:evaluar>
+   </soapenv:Body>
+</soapenv:Envelope>

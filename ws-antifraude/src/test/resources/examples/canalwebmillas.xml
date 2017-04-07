@@ -1,0 +1,65 @@
+<urn:antiFraudEsb xmlns:urn="urn:com.avianca.esb.antifraude:ws-antifraude:1.0">
+	<encabezado>
+		<canal>WEB</canal>
+		<deviceFingerprint>1453841064668</deviceFingerprint>
+		<ip>127.0.0.1</ip>
+		<lineaNegocio>Millas</lineaNegocio>
+		<tipoPerfil>aviancacom</tipoPerfil>
+	</encabezado>
+	<datosCliente>
+		<apellido>TEST</apellido>
+		<ciudad>santa tecla</ciudad>
+		<codPostal>sal503</codPostal>
+		<direccion>calle madreselva</direccion>
+		<direccion2>santa elena</direccion2>
+		<email>diego.ceron4@avianca.com</email>
+		<estado>san salvador</estado>
+		<fechaNacimiento>1990-02-02T00:00:00</fechaNacimiento>
+		<nombre>LUIS</nombre>
+		<pais>SV</pais>
+		<sexo/>
+		<telAlterno>  22620350</telAlterno>
+	</datosCliente>
+	<datosCompra>
+		<compraBoleto>5000</compraBoleto>
+		<cuotas>1</cuotas>
+		<hotel>No</hotel>
+		<montoTotal>215.600</montoTotal>
+		<pais>SV</pais>
+		<tipoMoneda>USD</tipoMoneda>
+	</datosCompra>
+	<datosTarjeta>
+		<anioVencimiento/>
+		<apellidoTH>MONGE</apellidoTH>
+		<bin>444433</bin>
+		<ciudadTH>santa tecla</ciudadTH>
+		<codPostalTH>sal503</codPostalTH>
+		<direccion2TH>santa elena</direccion2TH>
+		<direccionTH>calle madreselva</direccionTH>
+		<estadoTH>san salvador</estadoTH>
+		<mesVencimiento/>
+		<nombreTH>DIEGO</nombreTH>
+		<numDocumentoTH>123456798</numDocumentoTH>
+		<numTarjeta/>
+		<paisTH>SV</paisTH>
+		<telefonoTH>22473605</telefonoTH>
+		<tipoDocumentoTH>DOCUMENTO UNICO DE IDENTIDAD (DUI)</tipoDocumentoTH>
+	</datosTarjeta>
+	<datosVuelo>
+		<oficinaReserva>SALTA0130</oficinaReserva>
+		<pnr>25U6TJ</pnr>
+		<tipoViaje>One Way</tipoViaje>
+	</datosVuelo>
+	<viajeroFrecuente>
+		<cantidadMillas>27500</cantidadMillas>
+		<categoria>LifeMiles</categoria>
+		<codLifemiles>13428650830</codLifemiles>
+		<docViajeroFrecuente>123456798</docViajeroFrecuente>
+		<eventDate/>
+		<fechaInscripcion>2015-09-28T00:00:00</fechaInscripcion>
+		<millasAcumuladas>253000</millasAcumuladas>
+		<saldoMillas>77500</saldoMillas>
+		<tipoTransaccionLM>Redencion de Boleto</tipoTransaccionLM>
+		<viajeroFrecuenteCreado>001</viajeroFrecuenteCreado>
+	</viajeroFrecuente>
+</urn:antiFraudEsb>

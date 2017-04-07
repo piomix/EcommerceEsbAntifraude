@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="051792ac-a6f0-4645-928d-dcbc8ebb0d79" activeEnvironment="Default" name="wsAntifraude_Local" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="ab0a6321-e071-4170-ab29-e41d4102d062" wsaVersion="NONE" name="WsAntifraudePortTypeServiceSoapBinding" type="wsdl" bindingName="{urn:com.avianca.esb.antifraude:ws-antifraude:1.0}WsAntifraudePortTypeServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8181/cxf/ecommerce/wsAntifraude/wsAntifraude?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8181/cxf/ecommerce/wsAntifraude/wsAntifraude?wsdl"><con:part><con:url>http://localhost:8181/cxf/ecommerce/wsAntifraude/wsAntifraude?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="WsAntifraudePortTypeService" targetNamespace="urn:com.avianca.esb.antifraude:ws-antifraude:1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:com.avianca.esb.antifraude:ws-antifraude:1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+  <wsdl:types>
+    <xs:schema targetNamespace="urn:com.avianca.esb.antifraude:ws-antifraude:1.0" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="antiFraudEsb" type="tns:antiFraudEsb"/>
+      <xs:element name="resultadoFraude" type="tns:resultadoFraude"/>
+      <xs:complexType name="antiFraudEsb">
+        <xs:sequence>
+          <xs:element name="encabezado" type="tns:encabezado"/>
+          <xs:element name="datosCliente" type="tns:cliente"/>
+          <xs:element name="datosCompra" type="tns:compra"/>
+          <xs:element name="datosTarjeta" type="tns:tarjetaCredito"/>
+          <xs:element name="datosVuelo" type="tns:vuelo"/>
+          <xs:element name="viajeroFrecuente" type="tns:viajeroFrecuente"/>
+          <xs:element name="datosPassenger" type="tns:datosPassenger"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="encabezado">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="canal" type="xs:string"/>
+          <xs:element minOccurs="0" name="deviceFingerprint" type="xs:string"/>
+          <xs:element minOccurs="0" name="ip" type="xs:string"/>
+          <xs:element minOccurs="0" name="lineaNegocio" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoPerfil" type="xs:string"/>
+          <xs:element minOccurs="0" name="userAgent" type="xs:string"/>
+          <xs:element minOccurs="0" name="commerce" type="xs:string"/>
+          <xs:element minOccurs="0" name="riskValidationService" type="xs:string"/>
+          <xs:element minOccurs="0" name="phoneCallerID" type="xs:string"/>
+          <xs:element minOccurs="0" name="reference" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="cliente">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+          <xs:element minOccurs="0" name="ciudad" type="xs:string"/>
+          <xs:element minOccurs="0" name="codPostal" type="xs:string"/>
+          <xs:element minOccurs="0" name="direccion" type="xs:string"/>
+          <xs:element minOccurs="0" name="direccion2" type="xs:string"/>
+          <xs:element minOccurs="0" name="email" type="xs:string"/>
+          <xs:element minOccurs="0" name="estado" type="xs:string"/>
+          <xs:element minOccurs="0" name="fechaNacimiento" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+          <xs:element minOccurs="0" name="pais" type="xs:string"/>
+          <xs:element minOccurs="0" name="sexo" type="xs:string"/>
+          <xs:element minOccurs="0" name="telAlterno" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="compra">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="compraBoleto" type="xs:string"/>
+          <xs:element minOccurs="0" name="cuotas" type="xs:int"/>
+          <xs:element minOccurs="0" name="hotel" type="xs:string"/>
+          <xs:element minOccurs="0" name="montoTotal" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="pais" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoMoneda" type="xs:string"/>
+          <xs:element minOccurs="0" name="eventDate" type="xs:string"/>
+          <xs:element minOccurs="0" name="corpCod" type="xs:string"/>
+          <xs:element minOccurs="0" name="corpName" type="xs:string"/>
+          <xs:element minOccurs="0" name="corpStatus" type="xs:string"/>
+          <xs:element minOccurs="0" name="thirdPartyBooking" type="xs:string"/>
+          <xs:element minOccurs="0" name="travelInsurance" type="xs:string"/>
+          <xs:element minOccurs="0" name="additionalCharges" type="xs:string"/>
+          <xs:element minOccurs="0" name="duration" type="xs:string"/>
+          <xs:element minOccurs="0" name="copypasteTC" type="xs:string"/>
+          <xs:element minOccurs="0" name="copypasteNameTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="copypasteBank" type="xs:string"/>
+          <xs:element minOccurs="0" name="copypasteCVV" type="xs:string"/>
+          <xs:element minOccurs="0" name="copypasteEmail" type="xs:string"/>
+          <xs:element minOccurs="0" name="flexible" type="xs:string"/>
+          <xs:element minOccurs="0" name="languaje" type="xs:string"/>
+          <xs:element minOccurs="0" name="idTransaccion" type="xs:string"/>
+          <xs:element minOccurs="0" name="gapRegistrationTCandBuy" type="xs:string"/>
+          <xs:element minOccurs="0" name="agent" type="xs:string"/>
+          <xs:element minOccurs="0" name="descriptionAncillary" type="xs:string"/>
+          <xs:element minOccurs="0" name="containsAncillary" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="tarjetaCredito">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="anioVencimiento" type="xs:string"/>
+          <xs:element minOccurs="0" name="apellidoTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="bin" type="xs:string"/>
+          <xs:element minOccurs="0" name="ciudadTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="codPostalTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="direccion2TH" type="xs:string"/>
+          <xs:element minOccurs="0" name="direccionTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="estadoTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="mesVencimiento" type="xs:string"/>
+          <xs:element minOccurs="0" name="nombreTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="numDocumentoTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="numTarjeta" type="xs:string"/>
+          <xs:element minOccurs="0" name="paisTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="telefonoTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoDocumentoTH" type="xs:string"/>
+          <xs:element minOccurs="0" name="franquicia" type="xs:string"/>
+          <xs:element minOccurs="0" name="cvv" type="xs:string"/>
+          <xs:element minOccurs="0" name="issuingBank" type="xs:string"/>
+          <xs:element minOccurs="0" name="registrationDateTC" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="vuelo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="oficinaReserva" type="xs:string"/>
+          <xs:element minOccurs="0" name="pnr" type="xs:string"/>
+          <xs:element minOccurs="0" name="tipoViaje" type="xs:string"/>
+          <xs:element minOccurs="0" name="passengerCount" type="xs:int"/>
+          <xs:element minOccurs="0" name="from" type="xs:string"/>
+          <xs:element minOccurs="0" name="to" type="xs:string"/>
+          <xs:element minOccurs="0" name="airlinecode" type="xs:string"/>
+          <xs:element minOccurs="0" name="passengerTotalAmount" type="xs:string"/>
+          <xs:element minOccurs="0" name="paisOficinaReserva" type="xs:string"/>
+          <xs:element minOccurs="0" name="path" type="xs:string"/>
+          <xs:element minOccurs="0" name="changeDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="duration" type="xs:string"/>
+          <xs:element minOccurs="0" name="fareBasis" type="xs:string"/>
+          <xs:element minOccurs="0" name="dayOfWeek" type="xs:string"/>
+          <xs:element minOccurs="0" name="weekOfYear" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="viajeroFrecuente">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="cantidadMillas" type="xs:int"/>
+          <xs:element minOccurs="0" name="categoria" type="xs:string"/>
+          <xs:element minOccurs="0" name="codLifemiles" type="xs:string"/>
+          <xs:element minOccurs="0" name="docViajeroFrecuente" type="xs:string"/>
+          <xs:element minOccurs="0" name="eventDate" type="xs:string"/>
+          <xs:element minOccurs="0" name="fechaInscripcion" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="millasAcumuladas" type="xs:int"/>
+          <xs:element minOccurs="0" name="saldoMillas" type="xs:int"/>
+          <xs:element minOccurs="0" name="tipoTransaccionLM" type="xs:string"/>
+          <xs:element minOccurs="0" name="viajeroFrecuenteCreado" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="datosPassenger">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="passengerEge1" type="xs:int"/>
+          <xs:element minOccurs="0" name="passengerEge2" type="xs:int"/>
+          <xs:element minOccurs="0" name="passengerEge3" type="xs:int"/>
+          <xs:element minOccurs="0" name="officePhone" type="xs:string"/>
+          <xs:element minOccurs="0" name="homePhone" type="xs:string"/>
+          <xs:element minOccurs="0" name="nombres" type="xs:string"/>
+          <xs:element minOccurs="0" name="apellidos" type="xs:string"/>
+          <xs:element minOccurs="0" name="email" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="resultadoFraude">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="resultado" type="tns:resultado"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="resultado">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="codigoError" type="xs:string"/>
+          <xs:element minOccurs="0" name="codigoRespuesta" type="xs:string"/>
+          <xs:element name="contadorErrores" type="xs:int"/>
+          <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+          <xs:element minOccurs="0" name="idLog" type="xs:string"/>
+          <xs:element minOccurs="0" name="identificador" type="xs:string"/>
+          <xs:element minOccurs="0" name="respuestaCybersource" type="xs:string"/>
+          <xs:element minOccurs="0" name="resultado" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="realizarMAF">
+    <wsdl:part element="tns:antiFraudEsb" name="arg0"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="realizarMAFResponse">
+    <wsdl:part element="tns:resultadoFraude" name="return"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="wsAntifraudePortType">
+    <wsdl:operation name="realizarMAF">
+      <wsdl:input message="tns:realizarMAF" name="realizarMAF"></wsdl:input>
+      <wsdl:output message="tns:realizarMAFResponse" name="realizarMAFResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WsAntifraudePortTypeServiceSoapBinding" type="tns:wsAntifraudePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="realizarMAF">
+      <soap:operation soapAction="realizarMAF" style="document"/>
+      <wsdl:input name="realizarMAF">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="realizarMAFResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WsAntifraudePortTypeService">
+    <wsdl:port binding="tns:WsAntifraudePortTypeServiceSoapBinding" name="wsAntifraudePortTypePort">
+      <soap:address location="http://localhost:8181/cxf/ecommerce/wsAntifraude/wsAntifraude"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8181/cxf/ecommerce/wsAntifraude/wsAntifraude</con:endpoint></con:endpoints><con:operation id="7fbef3ec-4558-4760-9a9c-dc59e9000b18" isOneWay="false" action="realizarMAF" name="realizarMAF" bindingOperationName="realizarMAF" type="Request-Response" outputName="realizarMAFResponse" inputName="realizarMAF" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="db7c51fa-c381-428b-a5b3-9423937757fb" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8181/cxf/wsAntifraude/wsAntifraudeTest</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:com.avianca.esb.antifraude:ws-antifraude:1.0">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:antiFraudEsb>
+         <encabezado>
+            <canal>WEB</canal>
+            <deviceFingerprint>cookie_125751830400000_136878</deviceFingerprint>
+            <ip>127.0.0.1</ip>
+            <lineaNegocio>AVATAR</lineaNegocio>
+            <tipoPerfil>Millas</tipoPerfil>
+		  <userAgent>ua_125751830400000_136878</userAgent>
+         </encabezado>
+         <datosCliente>
+            <apellido>MARROQUIN</apellido>
+            <ciudad>SAN SALVADOR</ciudad>
+            <codPostal></codPostal>
+            <direccion>calle madreselva</direccion>
+            <direccion2>santa elena</direccion2>
+            <email>adriana.marroquin@avianca.com</email>
+            <estado>sv</estado>
+            <fechaNacimiento>0001-01-01</fechaNacimiento>
+            <nombre>ADRIANA</nombre>
+            <pais>SV</pais>
+            <sexo>F</sexo>
+            <telAlterno></telAlterno>
+         </datosCliente>
+         <datosCompra>
+            <compraBoleto>5000</compraBoleto>
+            <cuotas>1</cuotas>
+            <hotel>No</hotel>
+            <montoTotal>33</montoTotal>
+            <pais>SV</pais>
+            <tipoMoneda>COP</tipoMoneda>
+            <eventDate>1990-02-02T00:00:00</eventDate>
+            <corpCod>1234</corpCod>
+            <corpName>La Empresa</corpName>
+            <corpStatus>status</corpStatus>
+            <thirdPartyBooking>00</thirdPartyBooking>
+            <travelInsurance>00</travelInsurance>
+            <additionalCharges>12.00</additionalCharges>
+            <duration>00:30:00</duration>
+            <copypasteTC>false</copypasteTC>
+            <copypasteNameTH>false</copypasteNameTH>
+            <copypasteBank>false</copypasteBank>
+            <copypasteCVV>false</copypasteCVV>
+            <copypasteEmail>false</copypasteEmail>
+            <flexible>si</flexible>
+            <languaje>ES</languaje>
+            <idTransaccion>20232407160/38508</idTransaccion>
+         </datosCompra>
+         <datosTarjeta>
+            <anioVencimiento>20</anioVencimiento>
+            <apellidoTH>MONGE</apellidoTH>
+            <bin>444433</bin>
+            <ciudadTH>bogota</ciudadTH>
+            <codPostalTH></codPostalTH>
+            <direccion2TH>santa elena</direccion2TH>
+            <direccionTH>CALLE NVA 2 RESIDENCIAL PARQUE DEL SOL CASA 8</direccionTH>
+            <estadoTH>bogota</estadoTH>
+            <mesVencimiento>05</mesVencimiento>
+            <nombreTH>ADRIANA MARROQUIN</nombreTH>
+            <numDocumentoTH>042602903</numDocumentoTH>
+            <numTarjeta>35B8EE49A804EE51D5433292646D3DE9B1ED42830BB1C6005F2B825D7D16B70D</numTarjeta>
+            <paisTH>CO</paisTH>
+            <telefonoTH></telefonoTH>
+            <tipoDocumentoTH>0</tipoDocumentoTH>			
+            <issuingBank>DAVIVIENDA</issuingBank>
+		  <franquicia>VI</franquicia>			
+         </datosTarjeta>
+         <datosVuelo>
+            <oficinaReserva>76997712</oficinaReserva>
+            <pnr>5TTE7H</pnr>
+            <tipoViaje>One Way</tipoViaje>
+            <passengerCount>1</passengerCount>
+            <from>SAL</from>
+            <to>BOG</to>
+            <airlinecode>8539</airlinecode>
+            <passengerTotalAmount>250.00</passengerTotalAmount>
+		  <paisOficinaReserva>CO</paisOficinaReserva>
+		  <segmentoVuelo>
+				<fechaSalida>2017-01-12T07:30:00</fechaSalida>
+				<fechaLlegada>2017-01-12T08:25:00</fechaLlegada>
+				<vuelo>8539</vuelo>
+				<origen>BOG</origen>
+				<destino>PEI</destino>
+				<clase>P</clase>
+		   </segmentoVuelo>
+         </datosVuelo>
+         <viajeroFrecuente>
+            <cantidadMillas>27500</cantidadMillas>
+            <categoria>LifeMiles</categoria>
+            <codLifemiles>13428650830</codLifemiles>
+            <docViajeroFrecuente>123456798</docViajeroFrecuente>
+            <eventDate/>
+            <fechaInscripcion>2015-09-28T00:00:00</fechaInscripcion>
+            <millasAcumuladas>253000</millasAcumuladas>
+            <saldoMillas>77500</saldoMillas>
+            <tipoTransaccionLM>Redencion de Boleto</tipoTransaccionLM>
+            <viajeroFrecuenteCreado>001</viajeroFrecuenteCreado>
+         </viajeroFrecuente>
+         <datosPassenger>
+            <passengerEge1>10</passengerEge1>
+            <passengerEge2>20</passengerEge2>
+            <passengerEge3>30</passengerEge3>
+            <officePhone>22473610</officePhone>
+            <homePhone>22473605</homePhone>
+		  <nombres>HUGO</nombres>
+		  <apellidos>HIDALGO</apellidos>
+		  <email>adriana.marroquin@avianca.com</email>
+         </datosPassenger>
+      </urn:antiFraudEsb>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="realizarMAF"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>

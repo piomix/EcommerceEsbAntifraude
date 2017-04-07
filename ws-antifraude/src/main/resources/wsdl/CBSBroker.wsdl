@@ -1,0 +1,268 @@
+<wsdl:definitions name="ServiceAF" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<wsp:Policy wsu:Id="BasicHttpsBinding_IServiceAF_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false"/>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+					</wsp:Policy>
+				</sp:TransportBinding>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="NetTcpBinding_IServiceAF_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1"/>
+				<sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+									<msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+								</msf:WindowsTransportSecurity>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+					</wsp:Policy>
+				</sp:TransportBinding>
+				<wsaw:UsingAddressing/>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsdl:types>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:import namespace="http://schemas.datacontract.org/2004/07/Avianca.AF.Application.DTO"/>
+			<xs:element name="ValidationAF">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="xmlDocument" nillable="true" type="xs:string"/>
+						<xs:element minOccurs="0" name="flowId" type="xs:int"/>
+						<xs:element minOccurs="0" name="userId" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ValidationAFResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="ValidationAFResult" nillable="true" type="q1:ServiceResponse" xmlns:q1="http://schemas.datacontract.org/2004/07/Avianca.AF.Application.DTO"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ClearCacheItem">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="item" nillable="true" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ClearCacheItemResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="ClearCacheItemResult" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+		<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+			<xs:element name="anyType" nillable="true" type="xs:anyType"/>
+			<xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+			<xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+			<xs:element name="boolean" nillable="true" type="xs:boolean"/>
+			<xs:element name="byte" nillable="true" type="xs:byte"/>
+			<xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+			<xs:element name="decimal" nillable="true" type="xs:decimal"/>
+			<xs:element name="double" nillable="true" type="xs:double"/>
+			<xs:element name="float" nillable="true" type="xs:float"/>
+			<xs:element name="int" nillable="true" type="xs:int"/>
+			<xs:element name="long" nillable="true" type="xs:long"/>
+			<xs:element name="QName" nillable="true" type="xs:QName"/>
+			<xs:element name="short" nillable="true" type="xs:short"/>
+			<xs:element name="string" nillable="true" type="xs:string"/>
+			<xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+			<xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+			<xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+			<xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+			<xs:element name="char" nillable="true" type="tns:char"/>
+			<xs:simpleType name="char">
+				<xs:restriction base="xs:int"/>
+			</xs:simpleType>
+			<xs:element name="duration" nillable="true" type="tns:duration"/>
+			<xs:simpleType name="duration">
+				<xs:restriction base="xs:duration">
+					<xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+					<xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+					<xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="guid" nillable="true" type="tns:guid"/>
+			<xs:simpleType name="guid">
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:attribute name="FactoryType" type="xs:QName"/>
+			<xs:attribute name="Id" type="xs:ID"/>
+			<xs:attribute name="Ref" type="xs:IDREF"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Avianca.AF.Application.DTO" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.datacontract.org/2004/07/Avianca.AF.Application.DTO">
+			<xs:complexType name="ServiceResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="ErrorCount" type="xs:int"/>
+					<xs:element minOccurs="0" name="Respuesta" nillable="true" type="tns:ProcessResponse"/>
+					<xs:element minOccurs="0" name="RespuestaCybersource" nillable="true" type="tns:CybersourceResponse"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ServiceResponse" nillable="true" type="tns:ServiceResponse"/>
+			<xs:complexType name="ProcessResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="AFSystemReturnCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Description" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="LogTransactionNumber" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="MessageUniqueIdentifier" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Result" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ProcessResponse" nillable="true" type="tns:ProcessResponse"/>
+			<xs:complexType name="CybersourceResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="AfsReplyReasonCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Decision" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ReasonCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="RequestId" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="RequestToken" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ResponseTime" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="xmlResponse" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="CybersourceResponse" nillable="true" type="tns:CybersourceResponse"/>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="IServiceAF_ValidationAF_InputMessage">
+		<wsdl:part name="parameters" element="tns:ValidationAF"/>
+	</wsdl:message>
+	<wsdl:message name="IServiceAF_ValidationAF_OutputMessage">
+		<wsdl:part name="parameters" element="tns:ValidationAFResponse"/>
+	</wsdl:message>
+	<wsdl:message name="IServiceAF_ClearCacheItem_InputMessage">
+		<wsdl:part name="parameters" element="tns:ClearCacheItem"/>
+	</wsdl:message>
+	<wsdl:message name="IServiceAF_ClearCacheItem_OutputMessage">
+		<wsdl:part name="parameters" element="tns:ClearCacheItemResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="IServiceAF">
+		<wsdl:operation name="ValidationAF">
+			<wsdl:input wsaw:Action="http://tempuri.org/IServiceAF/ValidationAF" message="tns:IServiceAF_ValidationAF_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IServiceAF/ValidationAFResponse" message="tns:IServiceAF_ValidationAF_OutputMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="ClearCacheItem">
+			<wsdl:input wsaw:Action="http://tempuri.org/IServiceAF/ClearCacheItem" message="tns:IServiceAF_ClearCacheItem_InputMessage"/>
+			<wsdl:output wsaw:Action="http://tempuri.org/IServiceAF/ClearCacheItemResponse" message="tns:IServiceAF_ClearCacheItem_OutputMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="BasicHttpBinding_IServiceAF" type="tns:IServiceAF">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="ValidationAF">
+			<soap:operation soapAction="http://tempuri.org/IServiceAF/ValidationAF" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ClearCacheItem">
+			<soap:operation soapAction="http://tempuri.org/IServiceAF/ClearCacheItem" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="BasicHttpsBinding_IServiceAF" type="tns:IServiceAF">
+		<wsp:PolicyReference URI="#BasicHttpsBinding_IServiceAF_policy"/>
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="ValidationAF">
+			<soap:operation soapAction="http://tempuri.org/IServiceAF/ValidationAF" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ClearCacheItem">
+			<soap:operation soapAction="http://tempuri.org/IServiceAF/ClearCacheItem" style="document"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="NetTcpBinding_IServiceAF" type="tns:IServiceAF">
+		<wsp:PolicyReference URI="#NetTcpBinding_IServiceAF_policy"/>
+		<soap12:binding transport="http://schemas.microsoft.com/soap/tcp"/>
+		<wsdl:operation name="ValidationAF">
+			<soap12:operation soapAction="http://tempuri.org/IServiceAF/ValidationAF" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ClearCacheItem">
+			<soap12:operation soapAction="http://tempuri.org/IServiceAF/ClearCacheItem" style="document"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ServiceAF">
+		<wsdl:port name="BasicHttpBinding_IServiceAF" binding="tns:BasicHttpBinding_IServiceAF">
+			<soap:address location="http://webappsdev.taca.com/vent/MafService/ServiceAF.svc"/>
+		</wsdl:port>
+		<wsdl:port name="BasicHttpsBinding_IServiceAF" binding="tns:BasicHttpsBinding_IServiceAF">
+			<soap:address location="https://salcto-dev02.grupotaca.com/vent/MafService/ServiceAF.svc"/>
+		</wsdl:port>
+		<wsdl:port name="NetTcpBinding_IServiceAF" binding="tns:NetTcpBinding_IServiceAF">
+			<soap12:address location="net.tcp://salcto-dev02.grupotaca.com/vent/MafService/ServiceAF.svc"/>
+			<wsa10:EndpointReference>
+				<wsa10:Address>net.tcp://salcto-dev02.grupotaca.com/vent/MafService/ServiceAF.svc</wsa10:Address>
+				<Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+					<Spn>host/salcto-dev02.grupotaca.com</Spn>
+				</Identity>
+			</wsa10:EndpointReference>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

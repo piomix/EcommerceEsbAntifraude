@@ -1,0 +1,12 @@
+<batch-execution lookup="defaultKieSession">
+	<set-global identifier="result" out-identifier="currency">
+      <com.avianca.maf.selection.Result></com.avianca.maf.selection.Result>
+  </set-global>
+   <insert out-identifier="result" return-object="false">
+      <com.avianca.maf.selection.CurrencyCountry>
+         <currency>${headers.tipoMoneda}</currency>
+         <country>${headers.paisTH}</country>
+      </com.avianca.maf.selection.CurrencyCountry>
+   </insert>
+<fire-all-rules/>
+</batch-execution>

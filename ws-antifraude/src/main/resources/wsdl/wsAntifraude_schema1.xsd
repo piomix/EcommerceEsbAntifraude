@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		xmlns:tns="urn:com.avianca.esb.antifraude:ws-antifraude:1.0" 
+		attributeFormDefault="unqualified" 
+		elementFormDefault="unqualified" 
+		targetNamespace="urn:com.avianca.esb.antifraude:ws-antifraude:1.0">
+  <xs:complexType name="antiFraudEsb">
+    <xs:sequence>
+      <xs:element minOccurs="1" name="encabezado" type="tns:encabezado"/>
+      <xs:element minOccurs="1" name="datosCliente" type="tns:cliente"/>
+      <xs:element minOccurs="1" name="datosCompra" type="tns:compra"/>
+      <xs:element minOccurs="1" name="datosTarjeta" type="tns:tarjetaCredito"/>
+      <xs:element minOccurs="0" name="datosVuelo" type="tns:vuelo"/>
+      <xs:element minOccurs="0" name="viajeroFrecuente" type="tns:viajeroFrecuente"/>
+      <xs:element minOccurs="0" name="datosPassenger" type="tns:datosPassenger"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="encabezado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="canal" type="xs:string"/>
+      <xs:element minOccurs="0" name="deviceFingerprint" type="xs:string"/>
+      <xs:element minOccurs="0" name="ip" type="xs:string"/>
+      <xs:element minOccurs="0" name="lineaNegocio" type="xs:string"/>
+      <xs:element minOccurs="0" name="tipoPerfil" type="xs:string"/>
+      <xs:element minOccurs="0" name="userAgent" type="xs:string"/>
+      <xs:element minOccurs="0" name="registrationDateTC" type="xs:string"/>
+      <xs:element minOccurs="0" name="commerce" type="xs:string"/>
+      <xs:element minOccurs="0" name="riskValidationService" type="xs:string"/>
+      <xs:element minOccurs="0" name="phoneCallerID" type="xs:string"/>
+      <xs:element minOccurs="0" name="reference" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cliente">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+      <xs:element minOccurs="0" name="ciudad" type="xs:string"/>
+      <xs:element minOccurs="0" name="codPostal" type="xs:string"/>
+      <xs:element minOccurs="0" name="direccion" type="xs:string"/>
+      <xs:element minOccurs="0" name="direccion2" type="xs:string"/>
+      <xs:element minOccurs="0" name="email" type="xs:string"/>
+      <xs:element minOccurs="0" name="estado" type="xs:string"/>
+      <xs:element minOccurs="0" name="fechaNacimiento" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+      <xs:element minOccurs="0" name="pais" type="xs:string"/>
+      <xs:element minOccurs="0" name="sexo" type="xs:string"/>
+      <xs:element minOccurs="0" name="telAlterno" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="compra">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="compraBoleto" type="xs:string"/>
+      <xs:element minOccurs="0" name="cuotas" type="xs:int"/>
+      <xs:element minOccurs="0" name="hotel" type="xs:string"/>
+      <xs:element minOccurs="0" name="montoTotal" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="pais" type="xs:string"/>
+      <xs:element minOccurs="0" name="tipoMoneda" type="xs:string"/>
+      <xs:element minOccurs="0" name="eventDate" type="xs:string"/>
+      <xs:element minOccurs="0" name="corpCod" type="xs:string"/>
+      <xs:element minOccurs="0" name="corpName" type="xs:string"/>
+      <xs:element minOccurs="0" name="corpStatus" type="xs:string"/>
+      <xs:element minOccurs="0" name="thirdPartyBooking" type="xs:string"/>
+      <xs:element minOccurs="0" name="travelInsurance" type="xs:string"/>
+      <xs:element minOccurs="0" name="additionalCharges" type="xs:string"/>
+      <xs:element minOccurs="0" name="duration" type="xs:string"/>
+      <xs:element minOccurs="0" name="copypasteTC" type="xs:string"/>
+      <xs:element minOccurs="0" name="copypasteNameTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="copypasteBank" type="xs:string"/>
+      <xs:element minOccurs="0" name="copypasteCVV" type="xs:string"/>
+      <xs:element minOccurs="0" name="copypasteEmail" type="xs:string"/>
+      <xs:element minOccurs="0" name="flexible" type="xs:string"/>
+      <xs:element minOccurs="0" name="languaje" type="xs:string"/>
+      <xs:element minOccurs="0" name="idTransaccion" type="xs:string"/>
+      <xs:element minOccurs="0" name="gapRegistrationTCandBuy" type="xs:string"/>
+      <xs:element minOccurs="0" name="agent" type="xs:string"/>
+      <xs:element minOccurs="0" name="descriptionAncillary" type="xs:string"/>
+      <xs:element minOccurs="0" name="containsAncillary" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="tarjetaCredito">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="anioVencimiento" type="xs:string"/>
+      <xs:element minOccurs="0" name="apellidoTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="bin" type="xs:string"/>
+      <xs:element minOccurs="0" name="ciudadTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="codPostalTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="direccion2TH" type="xs:string"/>
+      <xs:element minOccurs="0" name="direccionTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="estadoTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="mesVencimiento" type="xs:string"/>
+      <xs:element minOccurs="0" name="nombreTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="numDocumentoTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="numTarjeta" type="xs:string"/>
+      <xs:element minOccurs="0" name="paisTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="telefonoTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="tipoDocumentoTH" type="xs:string"/>
+      <xs:element minOccurs="0" name="issuingBank" type="xs:string"/>
+      <xs:element minOccurs="0" name="franquicia" type="xs:string"/>
+      <xs:element minOccurs="0" name="cvv" type="xs:string"/>
+      <xs:element minOccurs="0" name="registrationDateTC" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="vuelo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="oficinaReserva" type="xs:string"/>
+      <xs:element minOccurs="0" name="pnr" type="xs:string"/>
+      <xs:element minOccurs="0" name="tipoViaje" type="xs:string"/>
+      <xs:element minOccurs="0" name="passengerCount" type="xs:int"/>
+      <xs:element minOccurs="0" name="from" type="xs:string"/>
+      <xs:element minOccurs="0" name="to" type="xs:string"/>
+      <xs:element minOccurs="0" name="airlinecode" type="xs:string"/>
+      <xs:element minOccurs="0" name="passengerTotalAmount" type="xs:string"/>
+      <xs:element minOccurs="0" name="paisOficinaReserva" type="xs:string"/>
+      <xs:element minOccurs="0" name="path" type="xs:string"/>
+      <xs:element minOccurs="0" name="changeDate" type="xs:string"/>
+      <xs:element minOccurs="0" name="duration" type="xs:string"/>
+      <xs:element minOccurs="0" name="fareBasis" type="xs:string"/>
+      <xs:element minOccurs="0" name="dayOfWeek" type="xs:string"/>
+      <xs:element minOccurs="0" name="weekOfYear" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="viajeroFrecuente">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="cantidadMillas" type="xs:int"/>
+      <xs:element minOccurs="0" name="categoria" type="xs:string"/>
+      <xs:element minOccurs="0" name="codLifemiles" type="xs:string"/>
+      <xs:element minOccurs="0" name="docViajeroFrecuente" type="xs:string"/>
+      <xs:element minOccurs="0" name="eventDate" type="xs:string"/>
+      <xs:element minOccurs="0" name="fechaInscripcion" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="millasAcumuladas" type="xs:int"/>
+      <xs:element minOccurs="0" name="saldoMillas" type="xs:int"/>
+      <xs:element minOccurs="0" name="tipoTransaccionLM" type="xs:string"/>
+      <xs:element minOccurs="0" name="viajeroFrecuenteCreado" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="datosPassenger">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="passengerEge1" type="xs:int"/>
+      <xs:element minOccurs="0" name="passengerEge2" type="xs:int"/>
+      <xs:element minOccurs="0" name="passengerEge3" type="xs:int"/>
+      <xs:element minOccurs="0" name="officePhone" type="xs:string"/>
+      <xs:element minOccurs="0" name="homePhone" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="resultadoFraude">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="resultado" type="tns:resultado"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="resultado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="codigoError" type="xs:string"/>
+      <xs:element minOccurs="0" name="codigoRespuesta" type="xs:string"/>
+      <xs:element name="contadorErrores" type="xs:int"/>
+      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+      <xs:element minOccurs="0" name="idLog" type="xs:string"/>
+      <xs:element minOccurs="0" name="identificador" type="xs:string"/>
+      <xs:element minOccurs="0" name="respuestaCybersource" type="xs:string"/>
+      <xs:element minOccurs="0" name="resultado" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="antiFraudEsb" nillable="true" type="tns:antiFraudEsb"/>
+  <xs:element name="resultadoFraude" nillable="true" type="tns:resultadoFraude"/>
+</xs:schema>

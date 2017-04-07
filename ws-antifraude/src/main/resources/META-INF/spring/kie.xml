@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:kie="http://drools.org/schema/kie-spring"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://drools.org/schema/kie-spring http://drools.org/schema/kie-spring.xsd">
+
+    <bean id="kiePostProcessor" class="org.drools.osgi.spring.OsgiKModuleBeanFactoryPostProcessor"/>
+
+    <kie:kmodule id="camel-context">
+        <kie:kbase name="workflow" packages="rulesWorkflowDecision">
+            <kie:ksession name="ksessionWorkflow" type="stateless"/>
+        </kie:kbase>
+        <kie:kbase name="respuestas" packages="rulesRespuestaMAF">
+            <kie:ksession name="ksessionRespuestas" type="stateless"/>
+        </kie:kbase>
+    </kie:kmodule>
+</beans>

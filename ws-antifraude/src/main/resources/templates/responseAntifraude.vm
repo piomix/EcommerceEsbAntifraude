@@ -1,0 +1,19 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"/>
+   <soap:Body>
+      <realizarMAFResponse xmlns="urn:com.avianca.esb.antifraude:ws-antifraude:1.0">
+         <ns2:resultadoFraude xmlns:ns2="urn:com.avianca.esb.antifraude:ws-antifraude:1.0">
+            <resultado>
+               <codigoError>ESB-00</codigoError> 
+               <codigoRespuesta>0</codigoRespuesta>
+               <contadorErrores>0</contadorErrores>
+               <descripcion><descripcion/>
+               <idLog/>
+               <identificador>25U6TJ</identificador>
+               <respuestaCybersource/>
+               <resultado>Aprobado por validación antifraude</resultado>
+            </resultado>
+         </ns2:resultadoFraude>
+      </realizarMAFResponse>
+   </soap:Body>
+</soap:Envelope>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+        xmlns:camel="http://camel.apache.org/schema/spring" 
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:ctx="http://www.springframework.org/schema/context" 
+        xmlns:cxf="http://camel.apache.org/schema/cxf"
+        xmlns:http-conf="http://cxf.apache.org/transports/http/configuration" 
+        xmlns:kie="http://drools.org/schema/kie-spring"
+        xmlns:sec="http://cxf.apache.org/configuration/security" 
+        xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" 
+        xmlns:temp="http://tempuri.org/"
+        xmlns:util="http://www.springframework.org/schema/util" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="  http://www.springframework.org/schema/beans    
+        http://www.springframework.org/schema/beans/spring-beans.xsd    
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd      
+         http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd     
+         http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd       
+         http://drools.org/schema/kie-spring    
+         https://raw.githubusercontent.com/droolsjbpm/droolsjbpm-integration/master/kie-spring/src/main/resources/org/kie/spring/kie-spring-6.0.0.xsd         
+         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd     
+         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd     
+         http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd     
+         http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd       
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    
+    <!-- call properties pagosOnline -->
+	<import resource="properties-beans.xml" />
+    
+	<!-- call certificate -->
+	<camel:sslContextParameters id="sslContextParameters">
+		<camel:keyManagers keyPassword="changeit">
+			<camel:keyStore type="JKS" resource="mafKey.jks" password="changeit" />
+		</camel:keyManagers>
+		<camel:trustManagers>
+			<camel:keyStore type="JKS" resource="mafKey.jks" password="changeit" />
+		</camel:trustManagers>
+	</camel:sslContextParameters>
+	
+	<!-- Endpoint route -->
+	<cxf:cxfEndpoint id="routerEndpoint" 
+                         address="{{service.path.test}}" 
+                         serviceClass="com.avianca.esb.antifraude.ws_antifraude.WsAntifraudePortType">
+        <cxf:properties>
+            <!-- enable to show the cause exception message and the default value is false -->
+            <entry key="exceptionMessageCauseEnabled" value="true" />
+            <!-- enable sending the stack trace back to client; the default value is false-->
+            <entry key="faultStackTraceEnabled" value="true" />
+            <entry key="loggingFeatureEnabled" value="true"/>
+            <entry key="dataFormat" value="MESSAGE" />
+        </cxf:properties>
+    </cxf:cxfEndpoint>
+	
+    <cxf:cxfEndpoint id="serviceEndpoint" 
+                         address="{{cybersource.broker.service.url.pdt}}"
+                         serviceClass="com.avianca.esb.antifraude.ws_cbs.IServiceAF">
+        <cxf:properties>
+            <!-- enable to show the cause exception message and the default value is false -->
+            <entry key="exceptionMessageCauseEnabled" value="true" />
+            <!-- enable sending the stack trace back to client; the default value is false-->
+            <entry key="faultStackTraceEnabled" value="true" />
+            <entry key="loggingFeatureEnabled" value="true"/>
+            <entry key="dataFormat" value="MESSAGE" />
+        </cxf:properties>
+        <cxf:inInterceptors>
+            <ref bean="gzipInInterceptor"/>
+        </cxf:inInterceptors>        
+    </cxf:cxfEndpoint>
+    
+	<!-- Beans -->
+	<bean id="gzipInInterceptor" class="org.apache.cxf.transport.common.gzip.GZIPInInterceptor" />	
+	<bean id="TimeOutProcessor" class="com.avianca.esb.antifraude.processors.TimeOutProcessor" />
+	<bean id="XPathProcessor" class="com.avianca.esb.antifraude.processors.XPathProcessor" />
+	<bean id="XPathEvaluation" class="com.avianca.esb.antifraude.processors.XPathEvaluation" />
+	<bean id="ValidationException" class="com.avianca.esb.antifraude.processors.ValidationException" />
+	<bean id="TransformResponseCBS" class="com.avianca.esb.antifraude.processors.TransformResponseCBS" />
+	<bean id="SoapFaultHandler" class="com.avianca.esb.antifraude.processors.SoapFaultHandler" />
+	
+	<!-- Beans used by Camel -->
+	<bean id="MAFService" class="com.avianca.esb.antifraude.processors.MAFService" />
+	<bean id="ValidationWorkflow" class="com.avianca.esb.antifraude.processors.ValidationWorkflow" />
+	
+	<!-- set in headers for final request -->
+	<bean id="requestPagosOnline" class="com.avianca.esb.antifraude.processors.RequestPagosOnline"/>
+	
+	<bean id="forced" class="java.lang.Exception">
+		<constructor-arg index="0" value="This is a custom exception" />
+	</bean>
+	
+	<!-- Bean response final Pagos-Online -->
+	<bean id="resultadoFraudeBean" class="com.avianca.esb.antifraude.pojos.ResultadoFraude" />
+	
+	<!-- End Beans -->
+	
+	<!-- Camel route -->
+	<camelContext id="wsAntifraude" trace="false" handleFault="true" xmlns="http://camel.apache.org/schema/spring"
+	xmlns:ws="http://ws.maf.pagosonline.com/" xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:com.avianca.esb.antifraude:ws-antifraude:1.0">
+	
+		<!-- Call properties -->
+  		<propertyPlaceholder location="ref:props" id="properties"></propertyPlaceholder>
+  	
+		<onException>
+            <exception>java.lang.Exception</exception>
+            <redeliveryPolicy maximumRedeliveries="2"/>
+            <handled>
+                <constant>true</constant>
+            </handled>
+            <log message="Se ha generado un error al procesar la petición: --&gt; ${body}" logName="wsantifraudeLog" loggingLevel="ERROR"/>
+            <log message="Exception: ${exception}" loggingLevel="ERROR" logName="wsantifraudeLog"/>
+            <log message="StackTrace: ${exception.stacktrace}" loggingLevel="ERROR" logName="wsantifraudeLog"/>
+            <process ref="SoapFaultHandler"/>
+        </onException>
+
+		<route id="ROUTE-CHOICE-ANTIFRAUDE" streamCache="true">
+            <from id="_fromRouterEndpoint" uri="cxf:bean:routerEndpoint" />
+            <log message="REQUEST::: ${body}" loggingLevel="WARN" logName="wsantifraudeLog"/>
+            <unmarshal>
+                <soapjaxb contextPath="com.avianca.esb.antifraude.pojos" encoding="UTF-8" />
+            </unmarshal>
+            <log message="UNMARSHALL: ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+            
+            <setProperty propertyName="objectRequest">
+            	<simple>${body}</simple>
+            </setProperty>
+            
+            <choice>
+                <when>
+                    <simple>{{enabled.pagos.online}} == 'false'</simple>
+                    <log message="Enabled PagosOnline 'FALSE'" loggingLevel="WARN" logName="wsantifraudeLog"/>
+                    <to uri="direct:route-pagos"/>
+                </when>
+                <otherwise>
+                	<log message="Enabled PagosOnline 'TRUE'" loggingLevel="WARN" logName="wsantifraudeLog"/>
+                    <setHeader headerName="tipoMoneda">
+                        <simple>${body?.datosCompra?.tipoMoneda}</simple>
+                    </setHeader>
+                    <setHeader headerName="paisTH">
+                        <simple>${body?.datosTarjeta?.paisTH}</simple>
+                    </setHeader>
+                    <setHeader headerName="CamelVelocityResourceUri">
+                        <simple>templates/requestEcexuteRule.vm</simple>
+                    </setHeader>
+                    <to uri="velocity:dummy?encoding=UTF-8" />
+                    <log message="BODY: ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+                    <setHeader headerName="CamelHttpMethod">
+                        <constant>POST</constant>
+                    </setHeader>
+                    <setHeader headerName="Content-Type">
+                        <constant>application/xml</constant>
+                    </setHeader>
+                    <setHeader headerName="CamelHttpUri">
+                        <simple>{{brms.rest.execute.rule.url.selectionMAF}}</simple>
+                    </setHeader>
+                    <to uri="http://dummy?authMethod=Basic&amp;authUsername={{busines.central.authUsername.pagos}}&amp;authPassword={{busines.central.authPassword.pagos}}" />
+                    <log message="Response RULE::: ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+                    <setHeader headerName="responseStatus">
+                        <xpath>//response/@type</xpath>
+                    </setHeader>
+                    <setHeader headerName="responseMessage">
+                        <xpath>//response/@msg</xpath>
+                    </setHeader>
+                    <choice>
+                        <when>
+                            <simple>${headers.responseStatus} == 'FAILURE'</simple>
+                            <log message="ERROR: ${body}" logName="wsantifraudeLog" loggingLevel="ERROR"/>
+                            <setProperty propertyName="codigo-error">
+                                <constant>ESB-01</constant>
+                            </setProperty>
+                            <setProperty propertyName="descripcion">
+                                <simple>${headers.responseMessage}</simple>
+                            </setProperty>
+                            <bean ref="resultadoFraudeBean"/>
+                        </when>
+                        <when>
+                            <simple>${headers.responseStatus} == 'SUCCESS'</simple>
+                            <!-- procesar resuesta y decidir -->
+                            <setBody>
+                                <xpath resultType="java.lang.String">/response/results/node()</xpath>
+                            </setBody>
+                            <log message="REQUEST:: ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog" />
+                            <setHeader headerName="responseValue">
+                                <xpath resultType="java.lang.String">//com.avianca.maf.selection.Result/result/text()</xpath>
+                            </setHeader>
+                            
+                            <log message="AFTER :::  ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+                            <choice>
+                                <when>
+                                    <simple>${headers.responseValue} == 'CYBERSOURCE'</simple>
+                                    <to uri="direct:route-antifraude"/>
+                                </when>
+                                <when>
+                                    <simple>${headers.responseValue} == 'POL'</simple>
+                                    <to uri="direct:route-pagos"/>
+                                </when>
+                            </choice>
+                        </when>
+                    </choice>
+                </otherwise>
+            </choice>
+        </route>
+
+		<route id="ROUTE-PAGOS-ONLINE" trace="false" streamCache="true">
+			<from uri="direct:route-pagos" />
+			<log message="Comienza POL como antifraude…" loggingLevel="INFO" logName="wsantifraudeLog"/>
+			<log message="Procesando REQUEST ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+			
+			<!--		Built Request MAF Pagos-Online	-->
+			<!-- arg0 -->
+			<setHeader headerName="clientId">
+				<simple>{{operation.evaluar.clientId}}</simple>
+			</setHeader>
+			
+			<!-- arg1 -->
+			<setHeader headerName="login">
+				<simple>{{operation.evaluar.login}}</simple>
+			</setHeader>
+			
+			<!-- arg2 -->
+			<setHeader headerName="password">
+				<simple>{{operation.evaluar.password}}</simple>
+			</setHeader>
+			
+			<!-- arg3 -->
+			<log message="Comienza requestPagosOnline process... ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+			<bean ref="requestPagosOnline"/>
+			
+			<setHeader headerName="CamelVelocityResourceUri">
+				<simple>templates/requestEvaluarParamValue.vm</simple>
+			</setHeader>
+			
+			<log message="Invocando template requestEvaluarParamValue.vm..." logName="wsantifraudeLog"/>
+			<to uri="velocity:dummy?loaderCache=false&amp;encoding=UTF-8"/>
+			<log message="requestEvaluarParamValue.vm se ha procesado con éxito ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+
+			<marshal>
+				<jaxb contextPath="com.pagosonline.xsd2" prettyPrint="true" />
+			</marshal>
+			
+			<removeHeaders pattern="*"/>
+
+			<setHeader headerName="Accept">
+				<simple>text/xml;charset=utf-8</simple>
+			</setHeader>
+			<setHeader headerName="Content-Type">
+				<constant>text/xml;charset=utf-8</constant>
+			</setHeader>
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>		
+
+			<log message="REQUEST ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+			<log message="Invocando servicio de antifraude POL..." loggingLevel="INFO" logName="wsantifraudeLog"/>
+
+			<!-- Consume web service pagos-online -->
+			<!-- <to uri="https4:{{maf.pagosonline.uservice.url}}?bridgeEndpoint=true&amp;sslContextParametersRef=sslContextParameters" /> -->
+			<to uri="https4://{{maf.pagosonline.uservice.url.protocol}}?bridgeEndpoint=true&amp;sslContextParametersRef=sslContextParameters" />
+			
+			<log message="POL ha respondido con exito...." loggingLevel="INFO" logName="wsantifraudeLog"/>
+
+			<setBody>
+				<xpath>//return/node()</xpath>
+			</setBody>
+			<setProperty propertyName="respuestaCybersource">
+				<simple>${body}</simple>
+			</setProperty>
+			
+			<log message="POL RESPONSE ${body}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+
+			<unmarshal>
+				<jaxb contextPath="com.avianca.esb.antifraude.pagosOnline" prettyPrint="true" encoding="UTF-8" />
+			</unmarshal>
+
+			<choice>
+				<when>
+					<simple>${body?.codigoRespuesta} == 2</simple>
+					<setProperty propertyName="descripcion">
+						<simple>${body?.mensajeError}</simple>
+					</setProperty>
+				</when>
+				<otherwise>
+
+					<!-- Velocity -->
+					<setHeader headerName="codigoRespuesta">
+						<simple>${body?.codigoRespuesta}</simple>
+					</setHeader>
+					<log message=":::::::: CodigoRespuesta : ${header.codigoRespuesta}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+					<setHeader headerName="decision">
+						<simple>${body?.respuestaMafPrevalidacion?.decision}</simple>
+					</setHeader>
+					<log message=":::::::: Decision : ${header.decision}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+					<setHeader headerName="CamelVelocityResourceUri">
+						<simple>templates/requestRuleResponsePOL.vm</simple>
+					</setHeader>
+					<to uri="velocity:dummy?encoding=UTF-8" />
+					<!-- End Velocity -->
+					
+					<!-- delete headers http previous -->
+					<removeHeaders pattern="*" />
+					<!-- end delete -->
+					
+					<setHeader headerName="CamelHttpMethod">
+						<constant>POST</constant>
+					</setHeader>
+					<setHeader headerName="Content-Type">
+						<constant>application/xml</constant>
+					</setHeader>
+					<setHeader headerName="CamelHttpUri">
+						<simple>{{brms.rest.execute.rule.url.mapperResponse}}</simple>
+					</setHeader>
+					
+					<to uri="http://dummy?authMethod=Basic&amp;authUsername={{busines.central.authUsername.pagos}}&amp;authPassword={{busines.central.authPassword.pagos}}" />
+					
+<!-- 					<log message="::: bpms : ${body}"/> -->
+										
+					<setHeader headerName="responseStatus">
+						<xpath>//response/@type</xpath>
+					</setHeader>
+					<setHeader headerName="responseMessage">
+						<xpath>//response/@msg</xpath>
+					</setHeader>
+					
+					<choice>
+						<when>
+							<simple>${headers.responseStatus} == 'FAILURE'</simple>
+							<setProperty propertyName="codigo-error">
+								<constant>ESB-01</constant>
+							</setProperty>
+							<setProperty propertyName="descripcion">
+								<simple>${headers.responseMessage}</simple>
+							</setProperty>
+							<bean ref="resultadoFraudeBean" />
+						</when>
+						<when>
+							<simple>${headers.responseStatus} == 'SUCCESS'</simple>
+							<setBody>
+								<xpath resultType="java.lang.String">/response/results/node()</xpath>
+							</setBody>
+							<setProperty propertyName="codigoRespuesta">
+								<xpath resultType="java.lang.String">//responseMessage/text()</xpath>
+							</setProperty>
+						</when>
+					</choice>
+					<marshal>
+						<jaxb contextPath="com.avianca.esb.antifraude.pagosOnline" encoding="UTF-8" />
+					</marshal>
+					<setProperty propertyName="descripcion">
+						<simple>${body}</simple>
+					</setProperty>
+				</otherwise>
+			</choice>
+
+			<setProperty propertyName="codigoError">
+				<constant>ESB-00</constant>
+			</setProperty>
+			<setProperty propertyName="contadorErrores">
+				<constant>0</constant>
+			</setProperty>
+			<setProperty propertyName="resultado">
+				<constant>Aprobado por validación antifraude</constant>
+			</setProperty>
+			<bean ref="resultadoFraudeBean"></bean>
+		</route>
+
+		<route id="ROUTE-ANTIFRAUDE" trace="false" streamCache="true">
+            <from uri="direct:route-antifraude"/>
+            <log message="Inicia validación antifraude" logName="wsantifraudeLog" loggingLevel="INFO"/>
+            <log message="Request \n ${body}" logName="wsantifraudeLog" loggingLevel="WARN"/>
+            <!-- Creando mapa para usarlo en drools -->
+            <process ref="MAFService"/>
+            
+			<!-- <log message="HEADERS ${in.headers}" loggingLevel="WARN"/> -->
+            
+            <!-- Ingresando a drool workflowDecision.xls -->
+            <log message="Ingresando a tabla de decisión de flujos..." logName="wsantifraudeLog" loggingLevel="INFO"/>
+            <to uri="kie:ksessionWorkflow?action=insertBody"/>
+            <log message="Respuesta de la tabla de decisión ${body}" logName="wsantifraudeLog" loggingLevel="DEBUG"/>
+            <!-- Validando si la respuesta de la drools viene vacía -->
+            <process ref="ValidationWorkflow"/>
+		    
+            <!-- Setteando headers con valores de la respuesta de la tabla de decisión -->
+            <setHeader headerName="workflow">
+                <simple>${body[workflow]}</simple>
+            </setHeader>
+            <setHeader headerName="usuario">
+                <simple>${body[usuario]}</simple>
+            </setHeader>
+            <setHeader headerName="template">
+                <simple>${body[template]}</simple>
+            </setHeader>
+            <setHeader headerName="fecNac">
+                <simple>${exchangeProperty[fecNac]}</simple>
+            </setHeader>
+            <setHeader headerName="fecIns">
+                <simple>${exchangeProperty[fecIns]}</simple>
+            </setHeader>
+			
+            <!-- Setteando body con propiedad trx definida en MAFService -->
+            <setBody>
+                <simple>${exchangeProperty[trx]}</simple>
+            </setBody>
+		    
+            <!-- Invocando dinámicamente la plantilla, según el header[template] -->
+            <log message="Creando plantilla ${in.header[template]}..." logName="wsantifraudeLog" loggingLevel="INFO"/>
+            <recipientList>
+                <simple>velocity:${in.header[template]}</simple>
+            </recipientList>
+            <log message="Se ha generado la plantilla correctamente ${body}" logName="wsantifraudeLog" loggingLevel="DEBUG"/>
+		    
+            <!-- Ingresando plantilla en el xmlDocument de RedencionCBS -->
+            <log message="Ingresando plantilla en el xmlDocument de RedencionCBS..." logName="wsantifraudeLog" loggingLevel="INFO"/>
+            <to uri="velocity:templates/RedencionCBS.vm"/>
+            <log message="Se ha generado la plantilla correctamente ${body}" logName="wsantifraudeLog" loggingLevel="DEBUG"/>
+		    
+            <removeHeader headerName="MAFtrx" id="RemoveMAFtrx"/>
+            <log message="Comienza la invocación al servicio CBS Broker" logName="wsantifraudeLog" loggingLevel="INFO"/>
+		    
+            <!-- Estableciendo las propiedades url del servicio y wsdl como headers -->
+            <setHeader headerName="cbsUrl">
+                <simple>{{cybersource.broker.service.url}}</simple>
+            </setHeader>
+            <setHeader headerName="cbsWSDL">
+                <simple>{{cybersource.broker.wsdl.path}}</simple>
+            </setHeader>
+		    
+            <!-- Se cambia el timeout de 80 segundos -->
+            <process ref="TimeOutProcessor"/> 
+		    
+		    <log message="Invocando servicio CBS Broker {{cybersource.broker.service.url.pdt}}" loggingLevel="DEBUG" logName="wsantifraudeLog"/>
+            <setHeader headerName="SOAPAction">
+                <constant>{{soap.action.validationaf.url}}</constant>
+            </setHeader>
+            <to uri="cxf:bean:serviceEndpoint"/>
+            <log message="Termina la invocación al servicio CBS Broker RESPUESTA: ${body}" logName="wsantifraudeLog" loggingLevel="DEBUG"/>
+            <setBody id="soapBody">
+                <xpath>//soap:Body/*</xpath>
+            </setBody>
+            <choice>
+                <when>
+                    <xpath>count(//soap:Fault) &gt;= 1</xpath>
+                    <marshal>
+                        <soapjaxb contextPath="com.avianca.esb.antifraude.pojos" encoding="UTF-8"/>
+                    </marshal>
+                </when>
+                <when>
+                    <xpath>count(//temp:ValidationAFResponse) &gt;= 1</xpath>
+                    <log message="La transacción está siendo procesada por el ESB..." logName="wsantifraudeLog"/>
+                    <setBody>
+                        <xpath>//temp:ValidationAFResponse/*</xpath>
+                    </setBody>
+                    <to uri="XPathEvaluation"/>
+                    <log message="Se ha evaluado correctamente la respuesta de CBS Broker." logName="wsantifraudeLog"/>
+                    <to uri="kie:ksessionRespuestas?action=insertBody"/>
+                    <log message="Respuesta de las reglas de negocio ${body}" logName="wsantifraudeLog" loggingLevel="DEBUG"/>
+                    <to uri="TransformResponseCBS"/>
+                    <marshal>
+                        <soapjaxb contextPath="com.avianca.esb.antifraude.pojos" encoding="UTF-8"/>
+                    </marshal>
+                    <log message="Se ha procesado la validación antifraude satisfactoriamente ${body}" logName="wsantifraudeLog" loggingLevel="DEBUG"/>
+                </when>
+            </choice>
+        </route>
+	</camelContext>
+</beans>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cxf="http://camel.apache.org/schema/cxf"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:kie="http://drools.org/schema/kie-spring"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://cxf.apache.org/jaxrs
+       http://cxf.apache.org/schemas/jaxrs.xsd
+       http://drools.org/schema/kie-spring http://drools.org/schema/kie-spring.xsd">
+	   
+	<!-- call properties -->
+<!--     <import resource="properties-beans.xml" /> -->
+	   
+	<bean id="kiePostProcessor" class="org.drools.osgi.spring.OsgiKModuleBeanFactoryPostProcessor"/>
+
+    <kie:kmodule id="camel-context">
+        <kie:kbase name="workflow" packages="rulesWorkflowDecision">
+            <kie:ksession name="ksessionWorkflow" type="stateless"/>
+        </kie:kbase>
+        <kie:kbase name="respuestas" packages="rulesRespuestaMAF">
+            <kie:ksession name="ksessionRespuestas" type="stateless"/>
+        </kie:kbase>
+    </kie:kmodule>
+    
+	<!--   Beans used by Camel -->
+	<bean id="MAFService" class="com.avianca.esb.antifraude.processors.MAFService"/>
+	<bean id="ValidationWorkflow" class="com.avianca.esb.antifraude.processors.ValidationWorkflow"/>
+	<bean id="TimeOutProcessor" class="com.avianca.esb.antifraude.processors.TimeOutProcessor"/>
+	<bean id="XPathProcessor" class="com.avianca.esb.antifraude.processors.XPathProcessor"/>
+	<bean id="XPathEvaluation" class="com.avianca.esb.antifraude.processors.XPathEvaluation"/>
+	<bean id="ValidationException" class="com.avianca.esb.antifraude.processors.ValidationException"/>
+	<bean id="TransformResponseCBS" class="com.avianca.esb.antifraude.processors.TransformResponseCBS"/>
+	<bean id="SoapFaultHandler" class="com.avianca.esb.antifraude.processors.SoapFaultHandler"/>
+	
+	<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+	    <property name="location" value="classpath:properties/wsAntifraude.properties"/>
+	</bean>
+
+  <camelContext trace="false" handleFault="true" xmlns="http://camel.apache.org/schema/spring">
+  	
+  	<!-- Call properties -->
+<!--     <propertyPlaceholder location="ref:props" id="properties"></propertyPlaceholder> -->
+  	
+  	<onException>
+        <exception>java.lang.Exception</exception>
+        <redeliveryPolicy maximumRedeliveries="2"/>
+        <handled>
+            <constant>true</constant>
+        </handled>
+        <log message="Se ha generado un error al procesar la petición: --&gt; ${body}" logName="wsantifraudeLog" loggingLevel="ERROR"/>
+        <log message="Exception: ${exception}" loggingLevel="ERROR" logName="wsantifraudeLog"/>
+        <log message="StackTrace: ${exception.stacktrace}" loggingLevel="ERROR" logName="wsantifraudeLog"/>
+        <process ref="SoapFaultHandler"/>
+    </onException>
+  	
+    <route id="droolsEscogerFlujoTest" streamCache="true">
+    	<from uri="direct:escogerFlujoTest"/>
+	    <unmarshal>
+	      <jaxb contextPath="com.avianca.esb.antifraude.pojos" encoding="UTF-8"/>
+	    </unmarshal>
+		
+		<!-- Creando mapa para usarlo en drools -->
+	    <process ref="MAFService"/>
+	    
+		<!-- Ingresando a drool workflowDecision.xls -->
+	    <to uri="kie:ksessionWorkflow?action=insertBody" id="VerificarFlujo"/>
+	    <to uri="mock:droolsFlujo"/>
+    </route>
+    <route>
+    	<from uri="direct:ValidationAFCanalCom" />
+    	
+    	<!-- Setteando body con propiedad trx definida en MAFService -->
+	    <!-- Setteando headers con valores de la respuesta de la tabla de decisión -->
+	    
+		<!-- Invocando dinámicamente la plantilla, según el header[template] -->
+	    <recipientList>
+	      <simple>velocity:${in.header[template]}</simple>
+	    </recipientList>
+	    
+		<!-- Ingresando plantilla en el xmlDocument de RedencionCBS -->
+	    <to uri="velocity:templates/RedencionCBS.vm"/>
+	    
+		<!-- Estableciendo las propiedades url del servicio y wsdl como headers -->
+	    <setHeader headerName="cbsUrl"><simple>{{cybersource.broker.service.url}}</simple></setHeader>
+	    <setHeader headerName="cbsWSDL"><simple>{{cybersource.broker.wsdl.path}}</simple></setHeader>
+	    
+		<!-- Se cambia el timeout de 80 segundos -->
+	    <process ref="TimeOutProcessor"/>
+	    
+	    <setHeader headerName="SOAPAction">
+	      <constant>{{soap.action.validationaf.url}}</constant>
+	    </setHeader>
+	    <to uri="mock:serviceCBSEndpoint"/>
+    </route>
+  </camelContext>
+
+</beans>
